@@ -36,7 +36,7 @@ switch($_POST['call']){
         // $response = file_get_contents('http://daiktuinternetasnodered.herokuapp.com');
         // echo $response;
 
-        $url = 'http://daiktuinternetasnodered.herokuapp.com/state';
+        $url = 'http://daiktuinternetasnodered.herokuapp.com/state_lamp';
         $data = array('lempa' => $_POST['state']);
         
         // use key 'http' even if you send the request to https://...
@@ -59,7 +59,7 @@ switch($_POST['call']){
         // $response = file_get_contents('http://daiktuinternetasnodered.herokuapp.com');
         // echo $response;
 
-        $url = 'http://daiktuinternetasnodered.herokuapp.com/state';
+        $url = 'http://daiktuinternetasnodered.herokuapp.com/state_temp';
         $data = array('temp' => $_POST['state']);
         
         // use key 'http' even if you send the request to https://...

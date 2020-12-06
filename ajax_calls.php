@@ -30,14 +30,37 @@ switch($_POST['call']){
         }
     echo json_encode($var);   
     break;
-    case 'switch_rele':
-        send_pg_query("INSERT INTO controller (state) VALUES('".$_POST['state']."')");
+    case 'switch_lempa':
+        send_pg_query("INSERT INTO controller (state, kam) VALUES('".$_POST['state']."', '0')");
 
         // $response = file_get_contents('http://daiktuinternetasnodered.herokuapp.com');
         // echo $response;
 
         $url = 'http://daiktuinternetasnodered.herokuapp.com/state';
-        $data = array('key1' => $_POST['state']);
+        $data = array('lempa' => $_POST['state']);
+        
+        // use key 'http' even if you send the request to https://...
+        $options = array(
+            'http' => array(
+                'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                'method'  => 'POST',
+                'content' => http_build_query($data)
+            )
+        );
+        $context  = stream_context_create($options);
+        $result = file_get_contents($url, false, $context);
+        if ($result === FALSE) { /* Handle error */ }
+        
+        var_dump($result);
+    break;
+    case 'switch_temp':
+        send_pg_query("INSERT INTO controller (state, kam) VALUES('".$_POST['state']."', '1')");
+
+        // $response = file_get_contents('http://daiktuinternetasnodered.herokuapp.com');
+        // echo $response;
+
+        $url = 'http://daiktuinternetasnodered.herokuapp.com/state';
+        $data = array('temp' => $_POST['state']);
         
         // use key 'http' even if you send the request to https://...
         $options = array(

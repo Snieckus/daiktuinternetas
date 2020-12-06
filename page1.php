@@ -10,16 +10,25 @@
                     <thead>
                         <tr>
                             <th>Temperatūra</th>
-                            <th>Rėlė</th>
+                            <th>Lempa</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                         <?php 
                             $dabartine_temp = mfa_kaip_array("SELECT temp, created_at FROM temperature ORDER BY created_at DESC LIMIT 1");
-                            $dabartine_rele = mfa_kaip_array("SELECT state, created_at FROM controller ORDER BY created_at DESC LIMIT 1");?>
-                            <td><?php echo '<b>'.$dabartine_temp[0]['temp'].'</b>';?><br><?php echo $dabartine_temp[0]['created_at'];?></td>
-                            <td><?php echo ($dabartine_rele[0]['state'] == '1') ? '<b>Įjungta</b>' : '<b>Išjungta</b>' ;?><br><?php echo $dabartine_rele[0]['created_at'];?></td>
+                            $dabartine_lempa = mfa_kaip_array("SELECT state, created_at FROM controller WHERE kam = '0' ORDER BY created_at DESC LIMIT 1");
+                            $dabartine_temp_controller = gor("SELECT state FROM controller WHERE kam = '1' ORDER BY created_at DESC LIMIT 1");?>
+                            <td><?php echo '<b>'.$dabartine_temp[0]['temp'].' <span>&#8451;</span></b>';?><br><?php echo $dabartine_temp[0]['created_at'];?><br>Statusas: <?php echo ($dabartine_temp_controller == '0') ? '<b>Nepildo</b>' : '<b>Pildo</b>';?></td>
+                            <td>
+                            <?php if($dabartine_lempa[0]['state'] == 1){
+                                ?><img id="myImg" src="https://www.w3schools.com/js/pic_bulbon.gif" alt="bulb" width="50" height="80"><?php
+                            }else{
+                                ?><img id="myImg" src="https://www.w3schools.com/js/pic_bulboff.gif" alt="bulb" width="50" height="80"><?php
+                            }
+                            ?>
+                            <br><?php echo $dabartine_lempa[0]['created_at'];?>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
@@ -43,9 +52,15 @@
                     $columns = array(
                         'id' => 'ID',
                         'state' => 'Būsena',
-                        'created_at' => 'Data'
+                        'created_at' => 'Data',
+                        'kam' => 'Kam'
                     );
-                    $sql = "SELECT * FROM controller";
+                    $sql = "SELECT id, state, created_at, CAST(
+                        CASE
+                             WHEN kam = '0'
+                                THEN 'Lempa'
+                             ELSE 'Temperatūra'
+                        END as varchar(200)) as kam FROM controller ORDER BY created_at DESC";
                     ?><div id="autosearch_controller"><?php autosearch($sql, $columns, 'controller');?></div>
             </div>
         </div>  
@@ -69,4 +84,13 @@
             }
         });
     });
+
+    function changeImage() {
+        var image = document.getElementById('myImage');
+        if (image.src.match("bulbon")) {
+            image.src = "pic_bulboff.gif";
+        } else {
+            image.src = "pic_bulbon.gif";
+        }
+    }
 </script>
